@@ -47,12 +47,13 @@ def _parse_regexp(reg, edges, current=0, c=0, out=None, block=False):
                 edges,c = _parse_regexp(reg, edges, before, c + 1, current)
             case '(':
                 edges, c = _parse_regexp(reg, edges, current, c + 1,out=out, block=True)
-                if c == len(reg) and reg[c - 1] != ')':
+                if c == len(reg):
                     raise ValueError("Synthax error: '(' without a ')'")
+                return edges, c
             case ')':
                 if not block:
                     raise ValueError("Synthax error: ')' without a '('")
-                return edges, c + 1
+                return edges, c
             case _:
                 if reg[c] != ' ':
                     if edges.get(current, None) is None:
@@ -95,3 +96,8 @@ class LParser:
             for j in edges.get(i):
                 l.append((i, self.edges.get(i).get(j)))
         _show(len(edges), l, True)
+
+
+lg = LParser("a+b+(cd)e")
+print(lg)
+lg.show()
