@@ -1,7 +1,4 @@
-import subprocess, sys
-
-from IPython.display import SVG
-
+import Graphe
 
 class LParser:
 
@@ -72,14 +69,14 @@ class LParser:
                 return self.eat(pos, '*')
             case '?':
                 return self.eat(pos, '?')
-            case '!':
+            case '!': #! is equivale at AA*
                 return self.eat(pos, '!')
         return pos
 
     def __init__(self, regex):
         self.regex = regex
+        self.graphe = Graphe.Graphe()
         self.Z()
-        self.graphe = {}
 
     def __str__(self):
         return self.regex
