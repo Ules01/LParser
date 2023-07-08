@@ -1,103 +1,91 @@
-
 import subprocess, sys
 
 from IPython.display import SVG
 
-def str_to_svg(str):
-    try:
-        dot = subprocess.Popen(['dot', '-Tsvg'],
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-    except FileNotFoundError:
-        print("The command 'dot' seems to be missing on your system.\n"
-              "Please install the GraphViz package "
-              "and make sure 'dot' is in your PATH.", file=sys.stderr)
-        raise
-    stdout, stderr = dot.communicate(str.encode('utf-8'))
-    if stderr:
-        print("Calling 'dot' for the conversion to SVG produced the message:\n"
-              + stderr.decode('utf-8'), file=sys.stderr)
-    ret = dot.wait()
-    if ret:
-        raise subprocess.CalledProcessError(ret, 'dot')
-    return stdout.decode('utf-8')
 
-def _show(n, edges, directed=False, highlight=[]):
-    gv = "digraph {" if directed else "graph {";
-    gv += 'rankdir=LR\nnode[shape=circle,style=filled,fillcolor="#ffffaa"]\n'
-    if directed:
-        gv += 'edge[arrowhead=vee, arrowsize=.7]\n'
-    for s in range(n):
-        gv += str(s) + '\n'
-    fmt = "{} -> {} {}\n" if directed else "{} -- {} {}\n"
-    for e in edges:
-        hl = "[color=red]" if (e in highlight) or (not directed and (e[1],e[0]) in highlight) else ""
-        gv += fmt.format(*e, hl)
-    gv += "}"
-    display(SVG(str_to_svg(gv)))
-
-def _parse_regexp(reg, edges, current=0, c=0, out=None, block=False):
-    before = -1
-    while c < len(reg):
-        match reg[c]:
-            case '+':
-                if c == 0:
-                    raise ValueError("Syntax error: '+' whitout a first argument")
-                edges,c = _parse_regexp(reg, edges, before, c + 1, current)
-            case '(':
-                edges, c = _parse_regexp(reg, edges, current, c + 1,out=out, block=True)
-                if c == len(reg):
-                    raise ValueError("Synthax error: '(' without a ')'")
-                return edges, c
-            case ')':
-                if not block:
-                    raise ValueError("Synthax error: ')' without a '('")
-                return edges, c
-            case _:
-                if reg[c] != ' ':
-                    if edges.get(current, None) is None:
-                        edges[current] = {}
-                    if block and reg[c + 1] == ')':
-                        edges[current][reg[c]] = out
-                        return edges, c + 1
-                    if not out is None and not block:
-                        edges[current][reg[c]] = out
-                        return edges, c
-                    next = current + 1
-                    while not edges.get(next, -1) == -1:
-                        next += 1
-                    edges[next] = {}
-                    edges[current][reg[c]] = next
-                    before = current
-                    current = next
-        c += 1
-    return edges, c
-
-
-
-
-def parse_regexp(reg, edges):
-    edges = _parse_regexp(reg, edges)
-    return edges
 class LParser:
+
+    def token(self, pos):
+        # Go search the first char != ' ' from the position pos int the regex
+        while pos < len(self.regex):
+            if self.regex[pos] != ' ':
+                return self.regex[pos], pos
+            pos += 1
+        if pos == len(self.regex):
+            return '$', pos
+        raise ValueError("Error: reading out of the regex")
+
+    def eat(self, pos, search):
+        c, pos = self.token(pos)
+        if c != search:
+            raise ValueError("Synthax Error: wasn't expecting " + c + ", was expecting " + search + " at " + str(pos))
+        return pos + 1
+    def Z(self, pos=0):
+        pos = self.S(pos)
+        self.eat(pos, '$')
+
+
+    """
+    Set of parsing rule
+    If the synthax is incorect, it will throw an error
+    """
+    def S(self,pos):
+        c, pos = self.token(pos)
+        if not c in ")!?*+$":
+            return self.A(pos)
+        return pos
+
+    def A(self, pos):
+        pos = self.B(pos)
+        return self.C(pos)
+
+    def B(self, pos):
+        c, pos = self.token(pos)
+        if c == '(':
+            pos = self.eat(pos, '(')
+            pos = self.A(pos)
+            pos = self.eat(pos, ')')
+        else:
+            pos = self.D(pos)
+        return self.E(pos)
+
+    def C(self,pos):
+        c, pos = self.token(pos)
+        if c == '+':
+            pos = self.eat(pos, '+')
+            return self.A(pos)
+        else:
+            return self.S(pos)
+
+    def D(self, pos):
+        c, pos = self.token(pos)
+        if c == '.':
+            return self.eat(pos, '.')
+        else:
+            if c not in "().!?*+$":
+                return self.eat(pos, c)
+
+    def E(self, pos):
+        c, pos = self.token(pos)
+        match c:
+            case '*':
+                return self.eat(pos, '*')
+            case '?':
+                return self.eat(pos, '?')
+            case '!':
+                return self.eat(pos, '!')
+        return pos
 
     def __init__(self, regex):
         self.regex = regex
-        self.edges,_ = parse_regexp(self.regex, {})
+        self.Z()
+        self.graphe = {}
 
     def __str__(self):
         return self.regex
 
-    def show(self):
-        l = []
-        edges = self.edges
-        for i in range(len(edges)):
-            for j in edges.get(i):
-                l.append((i, self.edges.get(i).get(j)))
-        _show(len(edges), l, True)
 
-
-lg = LParser("a+b+(cd)e")
+# Test 2
+lg = LParser("a + (b) *")
 print(lg)
-lg.show()
+
