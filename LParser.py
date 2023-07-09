@@ -18,9 +18,9 @@ class LParser:
             raise ValueError("Synthax Error: wasn't expecting " + c + ", was expecting " + search + " at " + str(pos))
         return pos + 1
     def Z(self, pos=0):
-        pos = self.S(pos)
+        pos, G = self.S(pos)
         self.eat(pos, '$')
-
+        return G
 
     """
     Set of parsing rule
@@ -30,39 +30,43 @@ class LParser:
         c, pos = self.token(pos)
         if not c in ")!?*+$":
             return self.A(pos)
-        return pos
+        return pos, Graphe.Graphe()
 
     def A(self, pos):
-        pos = self.B(pos)
-        return self.C(pos)
+        pos, G = self.B(pos)
+        return self.C(pos, G)
 
     def B(self, pos):
         c, pos = self.token(pos)
         if c == '(':
             pos = self.eat(pos, '(')
-            pos = self.A(pos)
+            pos, G = self.A(pos)
             pos = self.eat(pos, ')')
         else:
-            pos = self.D(pos)
-        return self.E(pos)
+            pos, G = self.D(pos)
+        return self.E(pos, G)
 
-    def C(self,pos):
+    def C(self,pos, G):
         c, pos = self.token(pos)
         if c == '+':
             pos = self.eat(pos, '+')
-            return self.A(pos)
+            pos, G2 = self.A(pos)
+            G.merge_or(G2)
         else:
-            return self.S(pos)
+            pos, G2 = self.S(pos)
+            G.merge_add(G2)
+        return pos, G
 
     def D(self, pos):
         c, pos = self.token(pos)
+        G = Graphe.Graphe()
         if c == '.':
-            return self.eat(pos, '.')
+            return self.eat(pos, '.'), G.add(c)
         else:
             if c not in "().!?*+$":
-                return self.eat(pos, c)
+                return self.eat(pos, c), G.add(c)
 
-    def E(self, pos):
+    def E(self, pos, G):
         c, pos = self.token(pos)
         match c:
             case '*':
@@ -71,18 +75,19 @@ class LParser:
                 return self.eat(pos, '?')
             case '!': #! is equivale at AA*
                 return self.eat(pos, '!')
-        return pos
+        return pos, G
 
     def __init__(self, regex):
         self.regex = regex
-        self.graphe = Graphe.Graphe()
-        self.Z()
+        self.graphe = self.Z()
 
     def __str__(self):
         return self.regex
 
 
 # Test 2
-lg = LParser("a + (b) *")
+lg = LParser("a(bc) + d")
 print(lg)
+print(lg.graphe)
+
 

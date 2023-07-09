@@ -10,27 +10,49 @@ class Graphe:
             e = self.end.pop()
             self.G[e][c] = node
         self.end.add(node)
+        return self
 
     def merge_add(self, G2):
         conv = {}
-        for i in range(1,len(G2)):
+        for i in range(1,len(G2.G)):
             conv[i] = self.new_node()
-        for i in G2:
+        for i in G2.G:
             for c in G2.G.get(i):
                 if i == 0:
                     for e in self.end:
                         self.G[e][c] = conv[G2.G.get(i).get(c)]
                 else:
                     self.G[conv[i]][c] = conv[G2.G.get(i).get(c)]
-        self.end = set()
+        end = set()
         for e2 in G2.end:
-            self.end.add(conv[e2])
+            if e2 == 0:
+                for e in self.end:
+                    end.add(e)
+            else:
+                end.add(conv.get(e2))
+        self.end = end
+        return self
 
     def merge_or(self, G2):
-        #TODO
-        pass
+        conv = {0:0}
+        for i in G2.G:
+            for c in G2.G.get(i):
+                if not self.G.get(conv[i]).get(c, None) is None:
+                    conv[self.G.get(conv[i]).get(c)] = self.G.get(conv[i]).get(c)
+                else:
+                    conv[G2.G.get(i).get(c)] = self.new_node()
+                self.G[conv[i]][c] = conv[G2.G.get(i).get(c)]
+        for e2 in G2.end:
+            self.end.add(conv.get(e2))
+        return self
+
+
+        return self
     def __init__(self):
         self.G = {0: {}}
         self.end = set()
         self.end.add(0)
+
+    def __str__(self):
+        return "G: " + str(self.G) + "\nend: " + str(self.end)
 
