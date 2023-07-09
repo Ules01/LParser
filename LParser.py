@@ -34,7 +34,9 @@ class LParser:
 
     def A(self, pos):
         pos, G = self.B(pos)
-        return self.C(pos, G)
+        pos, G = self.C(pos, G)
+        pos, G2 = self.S(pos)
+        return pos, G.merge_add(G2)
 
     def B(self, pos):
         c, pos = self.token(pos)
@@ -50,11 +52,9 @@ class LParser:
         c, pos = self.token(pos)
         if c == '+':
             pos = self.eat(pos, '+')
-            pos, G2 = self.A(pos)
+            pos, G2 = self.B(pos)
             G.merge_or(G2)
-        else:
-            pos, G2 = self.S(pos)
-            G.merge_add(G2)
+            pos, G = self.C(pos, G)
         return pos, G
 
     def D(self, pos):
@@ -70,13 +70,18 @@ class LParser:
         c, pos = self.token(pos)
         match c:
             case '*':
-                return self.eat(pos, '*')
+                pos = self.eat(pos, '*')
+                G.euclide()
             case '?':
-                return self.eat(pos, '?')
+                pos = self.eat(pos, '?')
+                G.end.add(0)
             case '!': #! is equivale at AA*
-                return self.eat(pos, '!')
+                pos = self.eat(pos, '!')
+                G.euclide_plus()
         return pos, G
 
+    def show(self):
+        self.graphe.show()
     def __init__(self, regex):
         self.regex = regex
         self.graphe = self.Z()
@@ -85,9 +90,11 @@ class LParser:
         return self.regex
 
 
-# Test 2
-lg = LParser("a(bc) + d")
+# Test
+print("Test 2")
+lg = LParser("(a + b)c*")
 print(lg)
 print(lg.graphe)
+lg.show()
 
 
