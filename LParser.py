@@ -20,7 +20,7 @@ class LParser:
     def Z(self, pos=0):
         pos, G = self.S(pos)
         self.eat(pos, '$')
-        return G
+        return G.reduce()
 
     """
     Set of parsing rule
@@ -92,7 +92,7 @@ class LParser:
 
 # Test
 print("Test 2")
-lg = LParser("(a + b)c*")
+lg = LParser("(ba)*bb")
 print(lg)
 print(lg.graphe)
 lg.show()

@@ -15,6 +15,37 @@ class Graphe:
         self.end.add(node)
         return self
 
+    def sub_merge(self, n1, n2):
+        for c in self.G.get(n1):
+            self.G[n2][c] = self.G.get(n1).get(c)
+
+    def reduce(self):
+        seen = [False] * len(self.G)
+        seen[0] = True
+        for i in self.G:
+            for c in self.G.get(i):
+                seen[self.G.get(i).get(c)] = True
+        k = 0
+        G = {0: {}}
+        conv = [i for i in range(len(self.G))]
+        for i in range(1, len(self.G)):
+            if not seen[i]:
+                conv[i] = -1
+                k = k + 1
+            else:
+                if k > 0:
+                    conv[i] = i - k
+                G[conv[i]] = {}
+        end = set()
+        for n in self.G:
+            if seen[n]:
+                if n in self.end:
+                    end.add(conv[n])
+                for c in self.G.get(n):
+                    G[conv[n]][c] = conv[self.G.get(n).get(c)]
+        self.G = G
+        self.end = end
+        return self
     def merge_add(self, G2):
         conv = {}
         for i in range(1,len(G2.G)):
@@ -23,9 +54,25 @@ class Graphe:
             for c in G2.G.get(i):
                 if i == 0:
                     for e in self.end:
-                        self.G[e][c] = conv[G2.G.get(i).get(c)]
+                        if not self.G.get(e).get(c, None) is None:
+                            n = self.G[e][c]
+                            self.G[e][c] = conv[G2.G.get(i).get(c)]
+                            if n != e:
+                                self.sub_merge(n, conv[G2.G.get(i).get(c)])
+                            else:
+                                self.G[conv[G2.G.get(i).get(c)]][c] = conv[G2.G.get(i).get(c)]
+                        else:
+                            self.G[e][c] = conv[G2.G.get(i).get(c)]
                 else:
-                    self.G[conv[i]][c] = conv[G2.G.get(i).get(c)]
+                    if not self.G.get(conv.get(i)).get(c, None) is None:
+                        n = self.G.get(conv.get(i)).get(c)
+                        self.G[conv[i]][c] = conv[G2.G.get(i).get(c)]
+                        if n != conv.get(i):
+                            self.sub_merge(n, conv[G2.G.get(i).get(c)])
+                        else:
+                            self.G[conv[G2.G.get(i).get(c)]][c] = conv.get(G2.G.get(i).get(c))
+                    else:
+                        self.G[conv[i]][c] = conv[G2.G.get(i).get(c)]
         end = set()
         for e2 in G2.end:
             if e2 == 0:
@@ -97,4 +144,6 @@ class Graphe:
 
     def __str__(self):
         return "G: " + str(self.G) + "\nend: " + str(self.end)
+
+
 
