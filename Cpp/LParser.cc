@@ -10,15 +10,23 @@ LParser::Token::Token(char c, enum LParser::tok tok) {
     this->tok = tok;
 }
 
-bool LParser::Token::operator!=(char c) {
+bool LParser::Token::operator!=(char c) const {
     return c != this->c;
 }
 
-bool LParser::Token::operator==(char c) {
+bool LParser::Token::operator==(char c) const {
     return c == this->c;
 }
 
-LParser::Token LParser::token(int *pos)
+bool LParser::Token::in(const string& str) const {
+    for (char c: str) {
+        if (c == this->c)
+            return true;
+    }
+    return false;
+}
+
+LParser::Token LParser::token(shared_ptr<int> pos)
 {
     for (;*(this->regexp + *pos) == ' '; *pos += 1){}
     switch (*(this->regexp + *pos))
@@ -44,15 +52,66 @@ LParser::Token LParser::token(int *pos)
     }
 }
 
-void LParser::eat(int *pos, LParser::Token search){
+void LParser::eat(shared_ptr<int> pos, LParser::Token search){
     int before = *pos;
     char tok = (*(this->regexp + *pos));
     if (search != tok)
-        LParser::mis_match(tok, search, before, *pos);
+        LParser::misMatch(tok, search, before, *pos);
     *pos += 1;
 }
 
-void LParser::mis_match(char get, LParser::Token expect, int start, int end){
+void LParser::misMatch(char get, LParser::Token expect, int start, int end){
     cerr << "Syntax error: was expecting " << expect.c << " but get " << get << endl;
 }
 
+ostream& operator<<(ostream& os, const LParser &lparser) {
+    return os<<lparser.regexp;
+}
+
+void LParser::S(shared_ptr<int> pos) {
+    Token tok = this->token(pos);
+    if (tok.in(")!?*+$"))
+        this->A(pos);
+}
+
+void LParser::A(shared_ptr<int> pos) {
+    this->B(pos);
+    this->C(pos);
+    this->S(pos);
+}
+
+void LParser::B(shared_ptr<int> pos) {
+    Token tok = this->token(pos);
+    if (tok.tok == LPARA){
+        this->eat(pos, {'(', LPARA});
+        this->A(pos);
+        this->eat(pos, {')', RPARA});
+    }
+    else {
+        this->D(pos);
+    }
+}
+
+void LParser::C(shared_ptr<int> pos) {
+    Token tok = this->token(pos);
+    if (tok.tok == OR){
+        this->eat(pos, {'+', OR});
+        this->B(pos);
+        this->C(pos);
+    }
+}
+
+void LParser::D(shared_ptr<int> pos) {
+
+}
+
+void LParser::E(shared_ptr<int> pos) {
+
+}
+
+
+int main(){
+    LParser lParser = LParser("coucou");
+    cout << "Hello wolrd!";
+    cout << lParser;
+}
