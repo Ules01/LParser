@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <vector>
 
 using namespace std;
 
@@ -33,7 +34,7 @@ class LParser {
                 Token(char c, enum tok tok);
                 bool operator!=(char c) const;
                 bool operator==(char c) const;
-                bool in(const string& str) const;
+                bool in(const vector<enum tok> tokList) const;
         };
 
         Token token(shared_ptr<int> pos);
@@ -41,6 +42,7 @@ class LParser {
         static void misMatch(char get, LParser::Token expect, int start, int end);
 
         //Parser LL(1)
+        void Z(shared_ptr<int> pos);
         void S(shared_ptr<int> pos);
         void A(shared_ptr<int> pos);
         void B(shared_ptr<int> pos);
