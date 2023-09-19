@@ -1,9 +1,6 @@
 #pragma once
 
-#include <iostream>
-#include <memory>
-#include <stdexcept>
-#include <vector>
+#include "Token.hh"
 
 using namespace std;
 
@@ -14,32 +11,9 @@ class LParser {
     private:
         char *regexp;
 
-        enum tok{
-            OR,
-            LPARA,
-            RPARA,
-            DOT,
-            MB,
-            EUCLIDE,
-            PLUS,
-            END,
-            N,
-        };
-
-        class Token {
-            public:
-                char c;
-                enum tok tok;
-
-                Token(char c, enum tok tok);
-                bool operator!=(char c) const;
-                bool operator==(char c) const;
-                bool in(const vector<enum tok> tokList) const;
-        };
-
         Token token(shared_ptr<int> pos);
         void eat(shared_ptr<int> pos, Token search);
-        static void misMatch(char get, LParser::Token expect, int start, int end);
+        static void misMatch(char get, Token expect, int start, int end);
 
         //Parser LL(1)
         void Z(shared_ptr<int> pos);

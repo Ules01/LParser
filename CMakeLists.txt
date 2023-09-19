@@ -6,5 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(Cpp)
 
 add_executable(LParser
+        Cpp/Token.cc
+        Cpp/Token.hh
         Cpp/LParser.cc
-        Cpp/LParser.hh)
+        Cpp/LParser.hh )

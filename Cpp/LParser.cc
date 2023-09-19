@@ -6,63 +6,41 @@ LParser::LParser(char *regexp){
     this->regexp = regexp;
     this->Z(make_shared<int>(0));
 }
-LParser::Token::Token(char c, enum LParser::tok tok) {
-    this->c = c;
-    this->tok = tok;
-}
 
-bool LParser::Token::operator!=(char c) const {
-    return c != this->c;
-}
-
-bool LParser::Token::operator==(char c) const {
-    return c == this->c;
-}
-
-bool LParser::Token::in(const vector<enum tok> tokList) const {
-    for (enum tok tok : tokList) {
-        if (tok == this->tok)
-            return true;
-    }
-    return false;
-}
-
-LParser::Token LParser::token(shared_ptr<int> pos)
-{
-    for (;*(this->regexp + *pos) == ' '; *pos += 1){}
-    switch (*(this->regexp + *pos))
-    {
+Token LParser::token(shared_ptr<int> pos) {
+    for (; *(this->regexp + *pos) == ' '; *pos += 1) {}
+    switch (*(this->regexp + *pos)) {
         case '\0':
-            return {'\0', LParser::END};
+            return {'$', Token::END};
         case '+':
-            return {'+', LParser::OR};
+            return {'+', Token::OR};
         case '(':
-            return {'(' ,LParser::LPARA};
+            return {'(', Token::LPARA};
         case ')':
-            return {')', LParser::RPARA};
+            return {')', Token::RPARA};
         case '.':
-            return {'.', LParser::DOT};
+            return {'.', Token::DOT};
         case '?':
-            return {'?', LParser::MB};
+            return {'?', Token::MB};
         case '*':
-            return {'*', LParser::EUCLIDE};
+            return {'*', Token::EUCLIDE};
         case '!':
-            return {'!', LParser::PLUS};
+            return {'!', Token::PLUS};
         default:
-            return {(*(this->regexp + *pos)), LParser::N};
+            return {(*(this->regexp + *pos)), Token::N};
     }
 }
 
-void LParser::eat(shared_ptr<int> pos, LParser::Token search){
+void LParser::eat(shared_ptr<int> pos, Token search){
     int before = *pos;
-    char tok = (*(this->regexp + *pos));
+    Token tok = this->token(pos);
     if (search != tok)
-        LParser::misMatch(tok, search, before, *pos);
+        LParser::misMatch(tok.c, search, before, *pos);
     *pos += 1;
 }
 
-void LParser::misMatch(char get, LParser::Token expect, int start, int end){
-    cerr << "Syntax error: was expecting " << expect.c << " but get " << get << endl;
+void LParser::misMatch(char get, Token expect, int start, int end){
+    cerr << "Syntax error: was expecting '" << expect.c << "' but get '" << get << "'" <<endl;
 }
 
 ostream& operator<<(ostream& os, const LParser &lparser) {
@@ -71,12 +49,12 @@ ostream& operator<<(ostream& os, const LParser &lparser) {
 
 void LParser::Z(shared_ptr<int> pos) {
     this->S(pos);
-    this->eat(pos, {'\0', END});
+    this->eat(pos, {'$', Token::END});
 }
 
 void LParser::S(shared_ptr<int> pos) {
     Token tok = this->token(pos);
-    if (not tok.in(vector<enum tok>({RPARA, EUCLIDE, MB, PLUS, OR, END})))
+    if (not tok.in(vector<enum Token::tok>({Token::RPARA, Token::EUCLIDE, Token::MB, Token::PLUS, Token::OR, Token::END})))
         this->A(pos);
 }
 
@@ -88,10 +66,10 @@ void LParser::A(shared_ptr<int> pos) {
 
 void LParser::B(shared_ptr<int> pos) {
     Token tok = this->token(pos);
-    if (tok.tok == LPARA){
+    if (tok.tok == Token::LPARA){
         this->eat(pos, tok);
         this->A(pos);
-        this->eat(pos, {')', RPARA});
+        this->eat(pos, {')', Token::RPARA});
     }
     else {
         this->D(pos);
@@ -101,7 +79,7 @@ void LParser::B(shared_ptr<int> pos) {
 
 void LParser::C(shared_ptr<int> pos) {
     Token tok = this->token(pos);
-    if (tok.tok == OR){
+    if (tok.tok == Token::OR){
         this->eat(pos, tok);
         this->B(pos);
         this->C(pos);
@@ -110,25 +88,23 @@ void LParser::C(shared_ptr<int> pos) {
 
 void LParser::D(shared_ptr<int> pos) {
     Token tok = this->token(pos);
-    if (tok.tok == DOT){
+    if (tok.tok == Token::DOT){
         this->eat(pos, tok);
     } else{
-        if (not tok.in(vector<enum tok>({LPARA, RPARA, DOT, PLUS, MB, EUCLIDE, OR, END}))){
-            this->eat(pos, tok);
-        }
+        this->eat(pos, {'n', Token::N});
     }
 }
 
 void LParser::E(shared_ptr<int> pos) {
     Token tok = this->token(pos);
     switch(tok.tok){
-        case EUCLIDE:
+        case Token::EUCLIDE:
             eat(pos, tok);
             break;
-        case MB:
+        case Token::MB:
             eat(pos, tok);
             break;
-        case PLUS:
+        case Token::PLUS:
             eat(pos, tok);
             break;
     }
@@ -137,5 +113,5 @@ void LParser::E(shared_ptr<int> pos) {
 
 
 int main(){
-    LParser("abc+d");
+    LParser("+");
 }
