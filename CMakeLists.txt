@@ -9,4 +9,6 @@ add_executable(LParser
         Cpp/Token.cc
         Cpp/Token.hh
         Cpp/LParser.cc
-        Cpp/LParser.hh )
+        Cpp/LParser.hh
+        Cpp/Graphe.hh
+        Cpp/Graphe.cc)

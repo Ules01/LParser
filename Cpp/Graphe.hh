@@ -3,11 +3,23 @@
 //
 #pragma once
 
-#include "LParser.hh"
 #include "Token.hh"
 
 class Graphe {
-    public:
-        map<int, map<Token, int>> G;
+public:
+        Graphe();
+        void mergeAdd();
+        void mergeOr();
+        void euclide();
+        void mb();
+        void euclidePlus();
+        const map<int, map<char, int>>& get();
+        void reduce();
 
+    private:
+        map<int, map<char, int>> G;
+        set<int> end;
+
+        int newNode();
+        void add(char tok);
 };
