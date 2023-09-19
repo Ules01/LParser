@@ -28,3 +28,9 @@ void Graphe::add(char c) {
     }
     this->end.insert(node);
 }
+
+void Graphe::subMerge(int n1, int n2) {
+    for (auto link : this->G){
+        this->G[n2][link.first] = this->G[n1][link.first];
+    }
+}

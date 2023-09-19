@@ -22,4 +22,5 @@ public:
 
         int newNode();
         void add(char tok);
+        void subMerge(int n1, int n2);
 };
