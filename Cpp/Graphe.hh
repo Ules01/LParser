@@ -8,8 +8,8 @@
 class Graphe {
 public:
         Graphe();
-        void mergeAdd();
-        void mergeOr();
+        void operator +(Graphe graphe2);
+        void operator *(Graphe graphe2);
         void euclide();
         void mb();
         void euclidePlus();

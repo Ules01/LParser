@@ -113,5 +113,9 @@ void LParser::E(shared_ptr<int> pos) {
 
 
 int main(){
-    LParser("+");
+    map<int, int> M = map<int,int>();
+    M[0] = 0;
+    if (M.find(1) != M.end())
+        cout << "Hello World" << endl;
+
 }
