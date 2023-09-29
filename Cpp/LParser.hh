@@ -8,6 +8,8 @@ class LParser {
     public:
         explicit LParser(char *regexp);
         friend ostream& operator<<(ostream&, const LParser& lparser);
+
+        Graphe graphe;
     private:
         char *regexp;
 
@@ -17,10 +19,10 @@ class LParser {
 
         //Parser LL(1)
         void Z(shared_ptr<int> pos);
-        void S(shared_ptr<int> pos);
-        void A(shared_ptr<int> pos);
-        void B(shared_ptr<int> pos);
-        void C(shared_ptr<int> pos);
-        void D(shared_ptr<int> pos);
-        void E(shared_ptr<int> pos);
+        Graphe S(shared_ptr<int> pos);
+        Graphe A(shared_ptr<int> pos);
+        Graphe B(shared_ptr<int> pos);
+        Graphe C(shared_ptr<int> pos, Graphe graphe2);
+        Graphe D(shared_ptr<int> pos);
+        Graphe E(shared_ptr<int> pos, Graphe graphe2);
 };

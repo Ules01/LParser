@@ -19,14 +19,15 @@ int Graphe::newNode() {
     return node;
 }
 
-void Graphe::add(char c) {
+Graphe Graphe::operator*(char c){
     int node = newNode();
-    while (this->end.size() > 0){
+    while (!this->end.empty()){
         int e = *this->end.begin();
         this->end.erase(e);
         this->G[e][c] = node;
     }
     this->end.insert(node);
+    return *this;
 }
 
 void Graphe::subMerge(int n1, int n2) {
@@ -53,7 +54,7 @@ void Graphe::euclide() {
     mb();
 }
 
-void Graphe::operator*(Graphe graphe2) {
+Graphe Graphe::operator*(Graphe graphe2) {
     int conv[graphe2.G.size()];
     for (int i = 0; i < graphe2.G.size(); i++){
         conv[i] = newNode();
@@ -103,9 +104,10 @@ void Graphe::operator*(Graphe graphe2) {
         }
     }
     this->end = newEnd;
+    return *this;
 }
 
-void Graphe::operator+(Graphe graphe2) {
+Graphe Graphe::operator+(Graphe graphe2) {
     map<int, int> conv = map<int,int>({pair<int,int>(0,0)});
     char c;
     for (const auto& link_1 : graphe2.G){
@@ -124,4 +126,50 @@ void Graphe::operator+(Graphe graphe2) {
     for (int e2 : graphe2.end){
         this->end.insert(conv[e2]);
     }
+    return *this;
+}
+
+Graphe Graphe::reduce() {
+    vector<bool> seen = vector<bool>(this->G.size(), false);
+    seen[0] = true;
+    for (const auto& link_1 : this->G){
+        for (auto link_2 : this->G[link_1.first]){
+            seen[link_2.second] = true;
+        }
+    }
+
+    int k = 0;
+    map<int,map<char,int>> G2 = map<int,map<char,int>>();
+    G2[0] = map<char, int>();
+    vector<int> conv = vector<int>(this->G.size(), 0);
+    for (int i = 1; i < this->G.size(); i++){
+        conv[i] = i;
+    }
+    for (int i = 1; i < this->G.size(); i++){
+        if (!seen[i]){
+            conv[i] = -1;
+            k += 1;
+        } else {
+            if (k > 0){
+                conv[i] = i - k;
+            }
+            G2[conv[i]] = map<char, int>();
+        }
+    }
+    char c;
+    set<int> end2 = set<int>();
+    for (int n = 0; n < this->G.size(); n++){
+        if (seen[n]){
+            if (this->end.find(n) != this->end.end()){
+                end2.insert(conv[n]);
+            }
+            for (auto link_2 : this->G[n]){
+                c = link_2.first;
+                G2[conv[n]][c] = conv[link_2.second];
+            }
+        }
+    }
+    this->end = end2;
+    this->G = G2;
+    return *this;
 }

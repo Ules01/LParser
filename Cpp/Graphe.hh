@@ -8,19 +8,20 @@
 class Graphe {
 public:
         Graphe();
-        void operator +(Graphe graphe2);
-        void operator *(Graphe graphe2);
-        void euclide();
+        Graphe operator +(Graphe graphe2);
+        Graphe operator *(Graphe graphe2);
+        Graphe operator *(char tok);
+
+    void euclide();
         void mb();
         void euclidePlus();
         const map<int, map<char, int>>& get();
-        void reduce();
+        Graphe reduce();
 
     private:
         map<int, map<char, int>> G;
         set<int> end;
 
         int newNode();
-        void add(char tok);
         void subMerge(int n1, int n2);
 };
