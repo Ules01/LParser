@@ -136,8 +136,30 @@ void LParser::printGraph() {this->graphe.print();}
 
 const map<int, map<char, int>> &LParser::getGraph() {return this->graphe.get();}
 
+bool LParser::isaccept(const char *str) {
+    auto G = this->graphe.get();
+    int p = 0;
+    char c;
+    for (int i = 0; str[i] != '\0'; i++){
+        c = str[i];
+        if (G[p].find(c) == G[p].end()) {
+            if (G[p].find('.') != G[p].end()) {
+                p = G[p]['.'];
+            } else { return false; }
+        } else { p = G[p][c];}
+    }
+    return this->graphe.inEnd(p);
+}
+
+bool LParser::isaccept(const string& str) {
+    char *cstr= new char [str.length() + 1];
+    strcpy(cstr, str.c_str());
+    return isaccept(cstr);
+}
+
 
 int main(){
-    LParser lParser = LParser(".*https?");
-    lParser.printGraph();
+    LParser lParser = LParser("a + b");
+    //lParser.printGraph();
+    printf("%b", lParser.isaccept("a"));
 }

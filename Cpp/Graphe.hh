@@ -7,11 +7,11 @@
 
 class Graphe {
 public:
-        Graphe();
-        Graphe operator +(Graphe graphe2);
-        Graphe operator *(Graphe graphe2);
-        Graphe operator *(char tok);
-        void print();
+    Graphe();
+    Graphe operator +(Graphe graphe2);
+    Graphe operator *(Graphe graphe2);
+    Graphe operator *(char tok);
+    void print();
 
     void euclide();
     void mb();
@@ -19,7 +19,9 @@ public:
     const map<int, map<char, int>>& get();
     Graphe reduce();
 
-    private:
+    bool inEnd(int p);
+
+private:
         map<int, map<char, int>> G;
         set<int> end;
 

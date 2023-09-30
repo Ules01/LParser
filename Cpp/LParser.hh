@@ -11,10 +11,12 @@ class LParser {
         explicit LParser(const string& regexp);
         explicit LParser(char *regexp);
 
-    friend ostream& operator<<(ostream&, const LParser& lparser);
+        friend ostream& operator<<(ostream&, const LParser& lparser);
 
         void printGraph();
-        const map<int, map<char, int>>& getGraph();
+        bool isaccept(const char *str);
+        bool isaccept(const string& str);
+    const map<int, map<char, int>>& getGraph();
     private:
         char *regexp;
         Graphe graphe;

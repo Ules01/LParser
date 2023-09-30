@@ -187,3 +187,6 @@ void Graphe::print() {
         printf("\t%d\n", n);
     }
 }
+
+bool Graphe::inEnd(int p) {return this->end.find(p) != this->end.end();}
+
