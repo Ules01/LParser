@@ -2,13 +2,20 @@
 
 using namespace std;
 
-LParser::LParser(char *regexp){
+LParser::LParser(const string& regexp){
+    this->regexp = new char [regexp.length() + 1];
+    strcpy(this->regexp, regexp.c_str());
+    this->graphe = Graphe();
+    this->Z(make_shared<int>(0));
+}
+
+LParser::LParser(char *regexp) {
     this->regexp = regexp;
     this->graphe = Graphe();
     this->Z(make_shared<int>(0));
 }
 
-Token LParser::token(shared_ptr<int> pos) {
+Token LParser::token(const shared_ptr<int>& pos) {
     for (; *(this->regexp + *pos) == ' '; *pos += 1) {}
     switch (*(this->regexp + *pos)) {
         case '\0':
@@ -32,7 +39,7 @@ Token LParser::token(shared_ptr<int> pos) {
     }
 }
 
-void LParser::eat(shared_ptr<int> pos, Token search){
+void LParser::eat(const shared_ptr<int>& pos, Token search){
     int before = *pos;
     Token tok = this->token(pos);
     if (search != tok)
@@ -48,27 +55,27 @@ ostream& operator<<(ostream& os, const LParser &lparser) {
     return os<<lparser.regexp << endl;
 }
 
-void LParser::Z(shared_ptr<int> pos) {
+void LParser::Z(const shared_ptr<int>& pos) {
     Graphe graphe_tmp = this->S(pos);
     this->eat(pos, {'$', Token::END});
     this->graphe = graphe_tmp.reduce();
 }
 
-Graphe LParser::S(shared_ptr<int> pos) {
+Graphe LParser::S(const shared_ptr<int>& pos) {
     Token tok = this->token(pos);
     if (not tok.in(vector<enum Token::tok>({Token::RPARA, Token::EUCLIDE, Token::MB, Token::PLUS, Token::OR, Token::END})))
         return this->A(pos);
-    return Graphe();
+    return {};
 }
 
-Graphe LParser::A(shared_ptr<int> pos) {
+Graphe LParser::A(const shared_ptr<int>& pos) {
     Graphe graphe2 = this->B(pos);
     graphe2 = this->C(pos, graphe2);
     Graphe graphe3 = this->S(pos);
     return graphe2 * graphe3;
 }
 
-Graphe LParser::B(shared_ptr<int> pos) {
+Graphe LParser::B(const shared_ptr<int>& pos) {
     Token tok = this->token(pos);
     Graphe graphe2;
     if (tok.tok == Token::LPARA){
@@ -82,7 +89,7 @@ Graphe LParser::B(shared_ptr<int> pos) {
     return this->E(pos, graphe2);
 }
 
-Graphe LParser::C(shared_ptr<int> pos, Graphe graphe2) {
+Graphe LParser::C(const shared_ptr<int>& pos, Graphe graphe2) {
     Token tok = this->token(pos);
     if (tok.tok == Token::OR){
         this->eat(pos, tok);
@@ -92,7 +99,7 @@ Graphe LParser::C(shared_ptr<int> pos, Graphe graphe2) {
     return graphe2;
 }
 
-Graphe LParser::D(shared_ptr<int> pos) {
+Graphe LParser::D(const shared_ptr<int>& pos) {
     Token tok = this->token(pos);
     Graphe graphe2 = Graphe();
     if (tok.tok == Token::DOT){
@@ -104,7 +111,7 @@ Graphe LParser::D(shared_ptr<int> pos) {
     }
 }
 
-Graphe LParser::E(shared_ptr<int> pos, Graphe graphe2) {
+Graphe LParser::E(const shared_ptr<int>& pos, Graphe graphe2) {
     Token tok = this->token(pos);
     switch(tok.tok){
         case Token::EUCLIDE:
@@ -125,17 +132,12 @@ Graphe LParser::E(shared_ptr<int> pos, Graphe graphe2) {
     return graphe2;
 }
 
+void LParser::printGraph() {this->graphe.print();}
+
+const map<int, map<char, int>> &LParser::getGraph() {return this->graphe.get();}
 
 
 int main(){
-    LParser lParser = LParser("a + b");
-
-    auto G = lParser.graphe.get();
-    for (const auto& link_1 : G){
-        printf("%d:\n", link_1.first);
-        for (auto link_2 : link_1.second){
-            printf("\t%c -> %d\n", link_2.first, link_2.second);
-        }
-    }
-
+    LParser lParser = LParser(".*https?");
+    lParser.printGraph();
 }

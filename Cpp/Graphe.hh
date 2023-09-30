@@ -11,12 +11,13 @@ public:
         Graphe operator +(Graphe graphe2);
         Graphe operator *(Graphe graphe2);
         Graphe operator *(char tok);
+        void print();
 
     void euclide();
-        void mb();
-        void euclidePlus();
-        const map<int, map<char, int>>& get();
-        Graphe reduce();
+    void mb();
+    void euclidePlus();
+    const map<int, map<char, int>>& get();
+    Graphe reduce();
 
     private:
         map<int, map<char, int>> G;

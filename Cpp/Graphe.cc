@@ -31,14 +31,14 @@ Graphe Graphe::operator*(char c){
 }
 
 void Graphe::subMerge(int n1, int n2) {
-    for (auto link : this->G){
+    for (auto link : this->G[n1]){
         this->G[n2][link.first] = this->G[n1][link.first];
     }
 }
 
 void Graphe::euclidePlus() {
     for (int e : this->end){
-        for (auto link : this->G){
+        for (auto link : this->G[0]){
             this->G[e][link.first] = this->G[0][link.first];
         }
     }
@@ -172,4 +172,18 @@ Graphe Graphe::reduce() {
     this->end = end2;
     this->G = G2;
     return *this;
+}
+
+void Graphe::print() {
+    for (const auto& link_1 : this->G){
+        printf("%d:\n", link_1.first);
+        for (auto link_2 : link_1.second){
+            printf("\t%c -> %d\n", link_2.first, link_2.second);
+        }
+    }
+
+    printf("\nEnd node:\n");
+    for (int n : this->end){
+        printf("\t%d\n", n);
+    }
 }
