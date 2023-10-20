@@ -3,6 +3,8 @@
 //
 #pragma once
 
+#include <fstream>
+
 #include "Token.hh"
 
 class Graphe {
