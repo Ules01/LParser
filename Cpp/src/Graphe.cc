@@ -217,11 +217,6 @@ void Graphe::export_graphivz() {
             }
         }
     }
-    exp = exp + "}\n";
+    exp = exp + "}";
     cout << exp << endl;
-
-    ofstream file;
-    file.open("graph.dot");
-    file << exp;
-    file.close();
 }
