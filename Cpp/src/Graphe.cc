@@ -209,7 +209,12 @@ void Graphe::export_graphivz() {
         }
     }
 
-    string exp = "digraph {\n";
+    string exp = "digraph {\n\t{ node [shape=\"doublecircle\"];";
+    for (int e: this->end){
+        exp += " " + to_string(e) + ";";
+    }
+    exp += "}\n";
+
     for (int i = 0; i < digraph.size(); i++){
         for (int j = 0; j < digraph.size(); j++){
             if (!digraph[i][j].empty()){
