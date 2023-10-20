@@ -223,6 +223,5 @@ void Graphe::export_graphivz() {
     ofstream file;
     file.open("graph.dot");
     file << exp;
-    file.
     file.close();
 }
