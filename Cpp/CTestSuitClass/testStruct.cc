@@ -15,8 +15,10 @@ struct testStruct addTest(int val, int exp, char *mes, struct testStruct testSui
         testSuit.first = test;
         testSuit.last = test;
     }
-    else
+    else {
         testSuit.last->next = test;
+        testSuit.last = test;
+    }
     testSuit.size += 1;
     test->next = NULL;
     return testSuit;
