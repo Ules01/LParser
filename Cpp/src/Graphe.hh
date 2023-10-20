@@ -21,10 +21,14 @@ public:
 
     bool inEnd(int p);
 
+    void export_graphivz();
+
 private:
         map<int, map<char, int>> G;
         set<int> end;
 
         int newNode();
         void subMerge(int n1, int n2);
+
+
 };

@@ -156,3 +156,7 @@ bool LParser::isaccept(const string& str) {
     strcpy(cstr, str.c_str());
     return isaccept(cstr);
 }
+
+void LParser::export_graphivz() {
+    this->graphe.export_graphivz();
+}

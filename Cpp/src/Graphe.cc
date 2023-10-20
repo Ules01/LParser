@@ -190,3 +190,33 @@ void Graphe::print() {
 
 bool Graphe::inEnd(int p) {return this->end.find(p) != this->end.end();}
 
+void Graphe::export_graphivz() {
+    vector<vector<string>> digraph = vector<vector<string>>();
+    for (int i = 0; i < this->G.size(); i++){
+        vector<string> sub = vector<string>();
+        for (int j = 0; j < this->G.size(); j++){
+            sub.emplace_back("");
+        }
+        digraph.emplace_back(sub);
+    }
+
+    for (auto link_1 : this->G){
+        for (auto link_2 : link_1.second) {
+            if (!digraph[link_1.first][link_2.second].empty()){
+                digraph[link_1.first][link_2.second] += ", ";
+            }
+            digraph[link_1.first][link_2.second] += link_2.first;
+        }
+    }
+
+    string exp = "digraph {\n";
+    for (int i = 0; i < digraph.size(); i++){
+        for (int j = 0; j < digraph.size(); j++){
+            if (!digraph[i][j].empty()){
+                exp+= "\t" + to_string(i) + "->" + to_string(j) +" [ label=" + digraph[i][j] + " ]\n";
+            }
+        }
+    }
+    exp = exp + "}\n";
+    cout << exp << endl;
+}

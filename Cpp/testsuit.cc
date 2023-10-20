@@ -1,9 +1,8 @@
 #include "CTestSuitClass/testStruct.hh"
 #include "src/LParser.hh"
 
-int main(void) {
+void basic(){
     struct testStruct testSuit = initTestSuit("Basic Serie");
-
     LParser lParser("a + b");
     testSuit = addTest(lParser.isaccept("a"), true, "Basic or: a in [a + b]", testSuit);
     testSuit = addTest(lParser.isaccept("b"), true, "Basic or: b in [a + b]", testSuit);
@@ -40,6 +39,14 @@ int main(void) {
     testSuit = addTest(lParser.isaccept("b"), true, "Basic .: b and [.]", testSuit);
     testSuit = addTest(lParser.isaccept("ab"), false, "Basic .: ab and [.]", testSuit);
 
-
     launchTestSuit(testSuit);
+}
+
+int main(void) {
+    basic();
+
+    LParser lParser("a+bc");
+    lParser.export_graphivz();
+
+    return 0;
 }

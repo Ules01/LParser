@@ -16,6 +16,8 @@ class LParser {
         void printGraph();
         bool isaccept(const char *str);
         bool isaccept(const string& str);
+
+        void export_graphivz();
     const map<int, map<char, int>>& getGraph();
     private:
         char *regexp;
