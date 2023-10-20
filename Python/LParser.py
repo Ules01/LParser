@@ -97,4 +97,4 @@ print(lg)
 print(lg.graphe)
 lg.show()
 
-
+é

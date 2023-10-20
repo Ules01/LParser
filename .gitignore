@@ -4,3 +4,9 @@ __pycache__/
 
 .vscode/
 cmake-build-debug/
+
+Cpp/CMakeCache.txt
+Cpp/CMakeFiles
+Cpp/Makefile
+Cpp/cmake_install.cmake
+Cpp/testsuit

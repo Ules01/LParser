@@ -156,10 +156,3 @@ bool LParser::isaccept(const string& str) {
     strcpy(cstr, str.c_str());
     return isaccept(cstr);
 }
-
-
-int main(){
-    LParser lParser = LParser("a + b");
-    //lParser.printGraph();
-    printf("%b", lParser.isaccept("a"));
-}
