@@ -2,7 +2,7 @@
 #include "src/LParser.hh"
 
 int main(void) {
-    struct testStruct testSuit = initTestSuit();
+    struct testStruct testSuit = initTestSuit("Basic Serie");
 
     LParser lParser("a + b");
     testSuit = addTest(lParser.isaccept("a"), true, "Basic or: a in [a + b]", testSuit);

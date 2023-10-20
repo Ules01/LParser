@@ -26,6 +26,7 @@ struct testStruct addTest(int val, int exp, char *mes, struct testStruct testSui
 
 void launchTestSuit(struct testStruct testSuit)
 {
+    printf("_________________________________\n%s:\n", testSuit.title);
     int success = 0;
     struct test *test = testSuit.first;
     struct test *tmp = NULL;
@@ -35,20 +36,21 @@ void launchTestSuit(struct testStruct testSuit)
         if (test->val == test->exp)
             success++;
         else
-            printf("[%s]: Failed: Expected %d but got %d\n", test->mes, test->exp, test->val);
+            printf("\tFailed: Expected %d but got %d\n", test->mes, test->exp, test->val);
         tmp = test;
         test = test->next;
         free(tmp);
         i++;
     }
-    printf("\nResult: %d/%d\n", success, testSuit.size);
+    printf("\n\tResult: %d/%d\n_________________________________\n", success, testSuit.size);
 }
 
-struct testStruct initTestSuit()
+struct testStruct initTestSuit(char *title)
 {
     struct testStruct testSuit;
     testSuit.size = 0;
     testSuit.last = NULL;
     testSuit.first = NULL;
+    testSuit.title = title;
     return testSuit;
 }
