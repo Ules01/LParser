@@ -24,7 +24,7 @@ struct testStruct addTest(int val, int exp, char *mes, struct testStruct testSui
     return testSuit;
 }
 
-void launchTestSuit(struct testStruct testSuit)
+int launchTestSuit(struct testStruct testSuit)
 {
     printf("_________________________________\n%s:\n", testSuit.title);
     int success = 0;
@@ -43,6 +43,7 @@ void launchTestSuit(struct testStruct testSuit)
         i++;
     }
     printf("\n\tResult: %d/%d\n_________________________________\n", success, testSuit.size);
+    return testSuit.size == success;
 }
 
 struct testStruct initTestSuit(char *title)

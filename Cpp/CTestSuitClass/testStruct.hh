@@ -19,5 +19,5 @@ struct testStruct {
 };
 
 struct testStruct addTest(int val, int exp, char *mes, struct testStruct testSuit);
-void launchTestSuit(struct testStruct testSuit);
+int launchTestSuit(struct testStruct testSuit);
 struct testStruct initTestSuit(char *title);
