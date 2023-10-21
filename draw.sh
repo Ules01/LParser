@@ -12,4 +12,7 @@ if [ $# -ne 0 ]; then
   rm graphivz/graph.dot.png
   dot -Tpng -O graphivz/graph.dot &&  sxiv graphivz/graph.dot.png
 
+else
+    sxiv Cpp/src/graphivz/graph.dot.png
+
 fi

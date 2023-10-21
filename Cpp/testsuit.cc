@@ -106,9 +106,30 @@ int semi_advanced(void){
     testSuit = addTest(lParser.isaccept("ab"), false, "Semi advanced or !: ab in [a + b!]", testSuit);
     testSuit = addTest(lParser.isaccept("ba"), false, "Semi advanced or !: ba in [a + b!]", testSuit);
 
-    
+    lParser = LParser("a+b?");
+    testSuit = addTest(lParser.isaccept("a"), true, "Semi advanced or ?: a in [a + b?]", testSuit);
+    testSuit = addTest(lParser.isaccept("b"), true, "Semi advanced or ?: b in [a + b?]", testSuit);
+    testSuit = addTest(lParser.isaccept(""), true, "Semi advanced or ?: $ in [a + b?]", testSuit);
+    testSuit = addTest(lParser.isaccept("ab"), false, "Semi advanced or ?: ab in [a + b?]", testSuit);
+
+    lParser = LParser("ab?c");
+    testSuit = addTest(lParser.isaccept("ac"), true, "Semi advanced and ?: ab in [ab?]", testSuit);
+    testSuit = addTest(lParser.isaccept("ac"), true, "Semi advanced and ?: a in [ab?]", testSuit);
+    testSuit = addTest(lParser.isaccept("b"), false, "Semi advanced and ?: b in [ab?]", testSuit);
 
     return launchTestSuit(testSuit);
+}
+
+int advanced() {
+    struct testStruct testSuit = initTestSuit("Advanced");
+
+    LParser lParser = LParser("((a+b+c)d)*");
+    testSuit = addTest(lParser.isaccept("adadcd"), true, "Advanced (or) and *: adadcd in [(a + b + c) d*", testSuit);
+    testSuit = addTest(lParser.isaccept("adacd"), false, "Advanced (or) and *: adacd in [(a + b + c) d*", testSuit);
+    testSuit = addTest(lParser.isaccept("adadc"), true, "Advanced (or) and *: adadc in [(a + b + c) d*", testSuit);
+
+    launchTestSuit(testSuit);
+
 }
 
 int main(void) {
