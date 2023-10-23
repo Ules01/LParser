@@ -24,5 +24,11 @@ If you just want to draw some graph you can just use the draw.sh script as:
 Be aware that the draw.sh script and the show python method only waork on linux ubuntu.
 The rest of the functionality work in other systems.
 
+# draw.sh rules
+* "Rebuild" or "-rb" will force to rebuild all the project.
+* "clean" delete the generated files but do not delete the latest graph picture.
+* Rest of strings will be interpreted as a regex. You can put different regexp at the same time. It will generate them one by one.
+* If no argument is pass it will print the last graph.
+
 # Futher informations
 The parser used on the regex is a LL(1).
