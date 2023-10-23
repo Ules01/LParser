@@ -36,7 +36,7 @@ int launchTestSuit(struct testStruct testSuit)
         if (test->val == test->exp)
             success++;
         else
-            printf("\tFailed: Expected %d but got %d\n", test->mes, test->exp, test->val);
+            printf("\t%s: Failed: Expected %d but got %d\n", test->mes, test->exp, test->val);
         tmp = test;
         test = test->next;
         free(tmp);

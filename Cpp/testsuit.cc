@@ -126,8 +126,10 @@ int advanced() {
     LParser lParser = LParser("((a+b+c)d)*");
     testSuit = addTest(lParser.isaccept("adadcd"), true, "Advanced (or) and *: adadcd in [(a + b + c) d*", testSuit);
     testSuit = addTest(lParser.isaccept("adacd"), false, "Advanced (or) and *: adacd in [(a + b + c) d*", testSuit);
-    testSuit = addTest(lParser.isaccept("adadc"), true, "Advanced (or) and *: adadc in [(a + b + c) d*", testSuit);
+    testSuit = addTest(lParser.isaccept("adadcd"), true, "Advanced (or) and *: adadc in [(a + b + c) d*", testSuit);
 
+    lParser = LParser("(chialer)+(crever)+(mourir)+(caner)+(manger)");
+    testSuit = addTest(lParser.isaccept("mourir"), true, "Advanced (or)+(or)...: mourir in [(chialer)+(crever)+(mourir)+(caner)+(manger)]", testSuit);
     launchTestSuit(testSuit);
 
 }
@@ -135,6 +137,7 @@ int advanced() {
 int main(void) {
     int res = basic();
     res = res && semi_advanced();
+    res = res && advanced();
     if (res)
         return 0;
     return -1;
