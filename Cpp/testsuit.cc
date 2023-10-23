@@ -129,7 +129,15 @@ int advanced() {
     testSuit = addTest(lParser.isaccept("adadcd"), true, "Advanced (or) and *: adadc in [(a + b + c) d*", testSuit);
 
     lParser = LParser("(chialer)+(crever)+(mourir)+(caner)+(manger)");
-    testSuit = addTest(lParser.isaccept("mourir"), true, "Advanced (or)+(or)...: mourir in [(chialer)+(crever)+(mourir)+(caner)+(manger)]", testSuit);
+    testSuit = addTest(lParser.isaccept("mourir"), true, "Advanced (and)+(and)...: mourir in [(chialer)+(crever)+(mourir)+(caner)+(manger)]", testSuit);
+
+    lParser = LParser("(ab?c)+(acb)");
+    testSuit = addTest(lParser.isaccept("abc"), true, "Advanced (?)+(and)...: abc in [(ab?c)+(acb)]", testSuit);
+    testSuit = addTest(lParser.isaccept("ac"), true, "Advanced (?)+(and)...: ac in [(ab?c)+(acb)]", testSuit);
+    testSuit = addTest(lParser.isaccept("acb"), true, "Advanced (?)+(and)...: acb in [(ab?c)+(acb)]", testSuit);
+    testSuit = addTest(lParser.isaccept("abcb"), false, "Advanced (?)+(and)...: abcb in [(ab?c)+(acb)]", testSuit);
+
+
     launchTestSuit(testSuit);
 
 }

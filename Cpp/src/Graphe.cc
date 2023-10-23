@@ -114,7 +114,14 @@ Graphe Graphe::operator+(Graphe graphe2) {
         for (auto link_2 : link_1.second){
             c = link_2.first;
             if (this->G[conv[link_1.first]].find(c) != this->G[conv[link_1.first]].end()){
-                conv[graphe2.G[link_1.first][c]] = this->G[link_1.first][c];
+                if (this->end.find(this->G[conv[link_1.first]][c]) == this->end.end())
+                    conv[graphe2.G[link_1.first][c]] = this->G[link_1.first][c];
+                else{
+                    if (conv.find(graphe2.G[link_1.first][c]) == conv.end()) {
+                        conv[graphe2.G[link_1.first][c]] = this->newNode();
+                        graphe2.end.insert(graphe2.G[link_1.first][c]);
+                    }
+                }
             } else {
                 if (conv.find(graphe2.G[link_1.first][c]) == conv.end()) {
                     conv[graphe2.G[link_1.first][c]] = this->newNode();
