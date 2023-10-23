@@ -213,12 +213,12 @@ void Graphe::export_graphivz() {
     for (int e: this->end){
         exp += " " + to_string(e) + ";";
     }
-    exp += "}\n\tempty [label=\"\", shape=none]\n\tempty->0\n\t";
+    exp += "}\n\tempty [label=\"\", shape=none]\n\tempty->0\n";
 
     for (int i = 0; i < digraph.size(); i++){
         for (int j = 0; j < digraph.size(); j++){
             if (!digraph[i][j].empty()){
-                exp+= "\t" + to_string(i) + "->" + to_string(j) +" [ label=" + digraph[i][j] + " ]\n";
+                exp+= "\t" + to_string(i) + "->" + to_string(j) +" [ label=\"" + digraph[i][j] + "\" ]\n";
             }
         }
     }
