@@ -47,10 +47,10 @@ int semi_advanced(void){
 
 
     LParser lParser = LParser("a + bc");
-    testSuit = addTest(lParser.isaccept("a"), false, "Semi advanced or and: a and [a + bc]", testSuit);
+    testSuit = addTest(lParser.isaccept("a"), true, "Semi advanced or and: a and [a + bc]", testSuit);
     testSuit = addTest(lParser.isaccept("b"), false, "Semi advanced or and: b and [a + bc]", testSuit);
     testSuit = addTest(lParser.isaccept("c"), false, "Semi advanced or and: c and [a + bc]", testSuit);
-    testSuit = addTest(lParser.isaccept("ac"), true, "Semi advanced or and: ac and [a + bc]", testSuit);
+    testSuit = addTest(lParser.isaccept("ac"), false, "Semi advanced or and: ac and [a + bc]", testSuit);
     testSuit = addTest(lParser.isaccept("bc"), true, "Semi advanced or and: bc and [a + bc]", testSuit);
     testSuit = addTest(lParser.isaccept("ca"), false, "Semi advanced or and: ca and [a + bc]", testSuit);
 
@@ -149,8 +149,8 @@ int advanced() {
 
 int main(void) {
     int res = basic();
-    res = res && semi_advanced();
-    res = res && advanced();
+    res = semi_advanced() && res;
+    res = advanced() && res;
     if (res)
         return 0;
     return -1;

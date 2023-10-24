@@ -92,7 +92,7 @@ Graphe LParser::C(const shared_ptr<int>& pos, Graphe G) {
     Token tok = this->token(pos);
     if (tok.tok == Token::OR){
         this->eat(pos, tok);
-        G = G + this->B(pos, Graphe());
+        G = G + this->A(pos, Graphe());
         G = this->C(pos, G);
     }
     return G;
