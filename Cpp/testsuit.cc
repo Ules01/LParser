@@ -138,7 +138,7 @@ int advanced() {
     testSuit = addTest(lParser.isaccept("abcb"), false, "Advanced (?)+(and)...: abcb in [(ab?c)+(acb)]", testSuit);
 
 
-    launchTestSuit(testSuit);
+    return launchTestSuit(testSuit);
 
 }
 
@@ -146,6 +146,10 @@ int main(void) {
     int res = basic();
     res = res && semi_advanced();
     res = res && advanced();
+
+    LParser lParser("ab+c");
+    lParser.printGraph();
+
     if (res)
         return 0;
     return -1;

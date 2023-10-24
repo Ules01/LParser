@@ -28,10 +28,10 @@ class LParser {
 
         //Parser LL(1)
         void Z(const shared_ptr<int>& pos);
-        Graphe S(const shared_ptr<int>& pos);
-        Graphe A(const shared_ptr<int>& pos);
-        Graphe B(const shared_ptr<int>& pos);
-        Graphe C(const shared_ptr<int>& pos, Graphe graphe2);
-        Graphe D(const shared_ptr<int>& pos);
-        Graphe E(const shared_ptr<int>& pos, Graphe graphe2);
+        Graphe S(const shared_ptr<int>& pos, Graphe G);
+        Graphe A(const shared_ptr<int>& pos, Graphe G);
+        Graphe B(const shared_ptr<int>& pos, Graphe G);
+        Graphe C(const shared_ptr<int>& pos, Graphe G);
+        Graphe D(const shared_ptr<int>& pos, Graphe G);
+        Graphe E(const shared_ptr<int>& pos, Graphe G);
 };

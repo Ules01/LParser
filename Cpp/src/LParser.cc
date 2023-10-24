@@ -56,80 +56,78 @@ ostream& operator<<(ostream& os, const LParser &lparser) {
 }
 
 void LParser::Z(const shared_ptr<int>& pos) {
-    Graphe graphe_tmp = this->S(pos);
+    Graphe graphe_tmp = this->S(pos, Graphe());
     this->eat(pos, {'$', Token::END});
     this->graphe = graphe_tmp.reduce();
 }
 
-Graphe LParser::S(const shared_ptr<int>& pos) {
+Graphe LParser::S(const shared_ptr<int>& pos, Graphe G) {
     Token tok = this->token(pos);
     if (not tok.in(vector<enum Token::tok>({Token::RPARA, Token::EUCLIDE, Token::MB, Token::PLUS, Token::OR, Token::END})))
-        return this->A(pos);
-    return {};
+        return this->A(pos, G);
+    return G;
 }
 
-Graphe LParser::A(const shared_ptr<int>& pos) {
-    Graphe graphe2 = this->B(pos);
-    graphe2 = this->C(pos, graphe2);
-    Graphe graphe3 = this->S(pos);
-    return graphe2 * graphe3;
+Graphe LParser::A(const shared_ptr<int>& pos, Graphe G) {
+    Graphe G2 = this->B(pos, Graphe());
+    G = G * G2;
+    G = this->C(pos, G);
+    return this->S(pos, G);
 }
 
-Graphe LParser::B(const shared_ptr<int>& pos) {
+Graphe LParser::B(const shared_ptr<int>& pos, Graphe G) {
     Token tok = this->token(pos);
-    Graphe graphe2;
     if (tok.tok == Token::LPARA){
         this->eat(pos, tok);
-        graphe2 = this->A(pos);
+        G = this->A(pos, Graphe());
         this->eat(pos, {')', Token::RPARA});
     }
     else {
-        graphe2 = this->D(pos);
+        G = this->D(pos, G);
     }
-    return this->E(pos, graphe2);
+    return this->E(pos, G);
 }
 
-Graphe LParser::C(const shared_ptr<int>& pos, Graphe graphe2) {
+Graphe LParser::C(const shared_ptr<int>& pos, Graphe G) {
     Token tok = this->token(pos);
     if (tok.tok == Token::OR){
         this->eat(pos, tok);
-        graphe2 + this->B(pos);
-        graphe2 = this->C(pos, graphe2);
+        G = G + this->B(pos, Graphe());
+        G = this->C(pos, G);
     }
-    return graphe2;
+    return G;
 }
 
-Graphe LParser::D(const shared_ptr<int>& pos) {
+Graphe LParser::D(const shared_ptr<int>& pos, Graphe G) {
     Token tok = this->token(pos);
-    Graphe graphe2 = Graphe();
     if (tok.tok == Token::DOT){
         this->eat(pos, tok);
-        return graphe2 * '.';
+        return G * '.';
     } else{
         this->eat(pos, {'n', Token::N});
-        return graphe2 * tok.c;
+        return G * tok.c;
     }
 }
 
-Graphe LParser::E(const shared_ptr<int>& pos, Graphe graphe2) {
+Graphe LParser::E(const shared_ptr<int>& pos, Graphe G) {
     Token tok = this->token(pos);
     switch(tok.tok){
         case Token::EUCLIDE:
             eat(pos, tok);
-            graphe2.euclide();
+            G.euclide();
             break;
         case Token::MB:
             eat(pos, tok);
-            graphe2.mb();
+            G.mb();
             break;
         case Token::PLUS:
             eat(pos, tok);
-            graphe2.euclidePlus();
+            G.euclidePlus();
             break;
         default:
             break;
     }
-    return graphe2;
+    return G;
 }
 
 void LParser::printGraph() {this->graphe.print();}
