@@ -30,6 +30,13 @@ The rest of the functionality work in other systems.
 * Rest of strings will be interpreted as a regex. You can put different regexp at the same time. It will generate them one by one.
 * If no argument is pass it will print the last graph.
 
+<br>Example:<br/>
+
+```console
+thl@forever:~$ ./draw.sh "ab|c"
+```
+ <img src="Cpp/src/graphivz/example.png">
+
 # Futher informations
 The parser used on the regex is a LL(1).
 

@@ -11,5 +11,5 @@ Makefile
 cmake_install.cmake
 testsuit
 
-Cpp/src/graphivz
+Cpp/src/graphivz/graph.*
 Cpp/src/draw
