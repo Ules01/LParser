@@ -20,8 +20,8 @@ Token LParser::token(const shared_ptr<int>& pos) {
     switch (*(this->regexp + *pos)) {
         case '\0':
             return {'$', Token::END};
-        case '+':
-            return {'+', Token::OR};
+        case '|':
+            return {'|', Token::OR};
         case '(':
             return {'(', Token::LPARA};
         case ')':
@@ -32,8 +32,8 @@ Token LParser::token(const shared_ptr<int>& pos) {
             return {'?', Token::MB};
         case '*':
             return {'*', Token::EUCLIDE};
-        case '!':
-            return {'!', Token::PLUS};
+        case '+':
+            return {'+', Token::PLUS};
         default:
             return {(*(this->regexp + *pos)), Token::N};
     }

@@ -7,9 +7,9 @@ Can be draw
 
 # Regex special character
 *  () -> Specify a sub bloc of regex
-*  \+ -> is the or symbol
+*  |-> is the or symbol
 *  \* -> means the char or the block before can be repeated as much as we want or never
-*  ! -> means the char or the block before can be repeated as much as we want but at least one time
+*  \+ -> means the char or the block before can be repeated as much as we want but at least one time
 *  ? -> the char before can be put one or 0 time
 *  $ -> means the end of the regex. It automaticly put one at the end of the string
 *  . -> represent all of the character
@@ -32,3 +32,62 @@ The rest of the functionality work in other systems.
 
 # Futher informations
 The parser used on the regex is a LL(1).
+
+* Grammar:
+  * Z:
+    * S$    (0)
+  * S:
+    * A     (1)
+    * e     (2)
+  * A:
+    * BCS   (3)
+  * B:
+    * (A)E  (4)
+    * DE    (5) 
+  * C:
+    * |AC   (6)
+    * e     (7)
+  * D:
+    * .     (8)
+    * n     (9)
+  * E:
+    * \*    (10)
+    * ?     (11)
+    * \+    (12)
+    * e     (13)
+
+|    Null    |
+|:----------:|
+|    SCE     |
+
+| State | First |
+|:-----:|:-----:|
+|   Z   |  (.n  |
+|   S   |  (.n  |
+|   A   |  (.n  |
+ |   B   |  (.n  |
+ |   C   |  \|   |
+ |   D   |  .n   |
+ |   E   |  *?+  |
+
+| State |      Follow      |
+|:-----:|:----------------:|
+|   Z   |                  |
+|   S   |       $)\|       |
+|   A   |       $)\|       |
+|   B   |     $(.n)\|      |
+|   C   |       (.n        |
+|   D   |    $(.n)\|*?+    |
+|   E   |   $(.n)\|        |
+
+| Terminals \ States | Z | S | A | B | C | D | E  |
+|:------------------:|:-:|:-:|:-:|:-:|:-:|:-:|:--:|
+|         $          |  2|   |   |   |   |   | 13 |
+|         (          | 0 |  1| 3 | 4 | 7 |   | 13 |
+|         )          | 2 |   |   |   |   |   | 13 |
+|         *          |   |   |   |   |   |   | 10 |
+|         ?          |   |   |   |   |   |   | 11 |
+|         +          |   |   |   |   |   |   | 12 |
+|         n          | 0 | 1 | 3 | 5 |  7| 9 | 13 |
+|         .          | 0 | 1 | 3 | 5 | 7 | 8 | 13 |
+|         \|         | 2 |   |   |   | 6 |   | 13 |    
