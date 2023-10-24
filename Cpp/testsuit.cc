@@ -137,6 +137,11 @@ int advanced() {
     testSuit = addTest(lParser.isaccept("acb"), true, "Advanced (?)+(and)...: acb in [(ab?c)+(acb)]", testSuit);
     testSuit = addTest(lParser.isaccept("abcb"), false, "Advanced (?)+(and)...: abcb in [(ab?c)+(acb)]", testSuit);
 
+    lParser = LParser("ab+c");
+    testSuit = addTest(lParser.isaccept("c"), true, "Advanced left to right or: c in [ab + c]", testSuit);
+    testSuit = addTest(lParser.isaccept("ab"), true, "Advanced left to right or: ab in [ab + c]", testSuit);
+    testSuit = addTest(lParser.isaccept("ac"), false, "Advanced left to right or: ac in [ab + c]", testSuit);
+    testSuit = addTest(lParser.isaccept("abc"), false, "Advanced left to right or: abc in [ab + c]", testSuit);
 
     return launchTestSuit(testSuit);
 
@@ -146,10 +151,6 @@ int main(void) {
     int res = basic();
     res = res && semi_advanced();
     res = res && advanced();
-
-    LParser lParser("ab+c");
-    lParser.printGraph();
-
     if (res)
         return 0;
     return -1;
