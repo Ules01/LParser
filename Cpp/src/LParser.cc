@@ -158,3 +158,49 @@ bool LParser::isaccept(const string& str) {
 void LParser::export_graphivz() {
     this->graphe.export_graphivz();
 }
+
+pair<int, string> LParser::subfound(const char* str, int pos){
+    int size = sizeof(str);
+    int states = 0;
+    auto G = this->graphe.get();
+    char c;
+    int i = 0;
+    string res = "";
+    while (pos < size){
+        c = str[pos + i];
+        if (G[states].find(c) == G[states].end())
+            return pair<int, string>(-1, "");
+        states = G[states][c];
+        res = res + c;
+        if (this->graphe.inEnd(states))
+            return pair<int, string>(i, res);
+        i += 1;
+    }
+    return pair<int, string>(-1, "");
+}
+
+string LParser::found(const char *str){
+    int size = sizeof(str);
+    pair<int, string> res;
+    for (int pos = 0; pos < size; pos++){
+        res = this->subfound(str, pos);
+        if (res.first > 0)
+            return res.second;
+    }
+    if (this->graphe.inEnd(0))
+        return "";
+    return NULL;
+}
+
+string LParser::found(const char *str, int pos){
+    int size = sizeof(str);
+    pair<int, string> res;
+    for (; pos < size; pos++){
+        res = this->subfound(str, pos);
+        if (res.first > 0)
+            return res.second;
+    }
+    if (this->graphe.inEnd(0))
+        return "";
+    return NULL;
+}

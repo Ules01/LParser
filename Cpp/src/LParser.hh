@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <optional>
 
 #include "Graphe.hh"
 
@@ -17,7 +18,11 @@ class LParser {
         bool isaccept(const char *str);
         bool isaccept(const string& str);
 
-        void export_graphivz();
+        string found(const char *str);
+        string found(const char *str, int pos);
+
+
+    void export_graphivz();
     const map<int, map<char, int>>& getGraph();
     private:
         char *regexp;
@@ -25,6 +30,8 @@ class LParser {
         Token token(const shared_ptr<int>& pos);
         void eat(const shared_ptr<int>& pos, Token search);
         static void misMatch(char get, Token expect, int start, int end);
+        pair<int, string> subfound(const char* str, int pos);
+
 
         //Parser LL(1)
         void Z(const shared_ptr<int>& pos);
