@@ -203,29 +203,31 @@ void LParser::export_graphivz() {
     this->graphe.export_graphivz();
 }
 
-pair<int, string> LParser::subfound(const char* str, int pos){
+pair<int, char *> LParser::subfound(const char* str, int pos){
     int size = sizeof(str);
     int states = 0;
     auto G = this->graphe.get();
     char c;
     int i = 0;
-    string res = "";
+    char res[size];
     while (pos < size){
         c = str[pos + i];
         if (G[states].find(c) == G[states].end())
-            return pair<int, string>(-1, "");
+            return pair<int, char *>(-1, NULL);
         states = G[states][c];
-        res = res + c;
-        if (this->graphe.inEnd(states))
-            return pair<int, string>(i, res);
+        res[i] = c;
+        if (this->graphe.inEnd(states)) {
+            res[i + 1] = '\0';
+            return pair<int, char *>(i + 1, res);
+        }
         i += 1;
     }
-    return pair<int, string>(-1, "");
+    return pair<int, char*>(-1, NULL);
 }
 
-string LParser::found(const char *str){
+char *LParser::found(const char *str){
     int size = sizeof(str);
-    pair<int, string> res;
+    pair<int, char *> res;
     for (int pos = 0; pos < size; pos++){
         res = this->subfound(str, pos);
         if (res.first > 0)
@@ -236,15 +238,52 @@ string LParser::found(const char *str){
     return NULL;
 }
 
-string LParser::found(const char *str, int pos){
+char *LParser::found(const char *str, size_t pos){
     int size = sizeof(str);
-    pair<int, string> res;
+    pair<int, char *> res;
     for (; pos < size; pos++){
         res = this->subfound(str, pos);
         if (res.first > 0)
             return res.second;
     }
-    if (this->graphe.inEnd(0))
-        return "";
     return NULL;
+}
+
+vector<string> LParser::all_at(const char *str, size_t pos) {
+    auto G = this->graphe.get();
+    vector<string> res = vector<string>();
+    string s = "";
+    if (G[0].find(str[pos]) != G[0].end())
+    {
+        s = s + str[pos];
+        pos += 1;
+        if (this->graphe.inEnd(1))
+            res.push_back(s);
+    } else
+        return res;
+    int state = 1;
+    for (; G[state].find(str[pos]) != G[state].end(); pos += 1){
+        s = s + str[pos];
+        if (this->graphe.inEnd(state))
+            res.push_back(s);
+    }
+    return res;
+}
+
+vector<string> LParser::all(const char *str){
+    if(str == NULL)
+        return vector<string>();
+    vector<string> res = vector<string>();
+    if (this->graphe.inEnd(0))
+        res.push_back("");
+    vector<string> vec_s;
+    for (size_t i = 0; str[i] != '\0';  i++){
+        vec_s = all_at(str, i);
+        if (vec_s.size() != 0){
+            for (string s : vec_s){
+                res.push_back(s);
+            }
+        }
+    }
+    return res;
 }

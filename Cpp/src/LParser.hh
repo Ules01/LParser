@@ -17,8 +17,11 @@ class LParser {
         bool isaccept(const char *str);
         bool isaccept(const string& str);
 
-        string found(const char *str);
-        string found(const char *str, int pos);
+        char * found(const char *str);
+        char * found(const char *str, size_t pos);
+
+        vector<string> all(const char *str);
+        vector<string> all_at(const char *str, size_t pos);
 
 
     void export_graphivz();
@@ -29,7 +32,7 @@ class LParser {
         Token token(const shared_ptr<int>& pos);
         void eat(const shared_ptr<int>& pos, Token search);
         static void misMatch(char get, Token expect, int start, int end);
-        pair<int, string> subfound(const char* str, int pos);
+        pair<int, char *> subfound(const char* str, int pos);
 
 
         //Parser LL(1)
