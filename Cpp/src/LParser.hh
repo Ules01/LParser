@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstring>
-#include <optional>
 
 #include "Graphe.hh"
 
@@ -41,4 +40,6 @@ class LParser {
         Graphe C(const shared_ptr<int>& pos, Graphe G);
         Graphe D(const shared_ptr<int>& pos, Graphe G);
         Graphe E(const shared_ptr<int>& pos, Graphe G);
+        Graphe F(const shared_ptr<int>& pos, Graphe G);
+
 };

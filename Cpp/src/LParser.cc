@@ -34,6 +34,12 @@ Token LParser::token(const shared_ptr<int>& pos) {
             return {'*', Token::EUCLIDE};
         case '+':
             return {'+', Token::PLUS};
+        case '-':
+            return {'-', Token::DASH};
+        case '[':
+            return {'[', Token::LBRACKET};
+        case ']':
+            return {']', Token::RBRACKET};
         default:
             return {(*(this->regexp + *pos)), Token::N};
     }
@@ -103,7 +109,10 @@ Graphe LParser::D(const shared_ptr<int>& pos, Graphe G) {
     if (tok.tok == Token::DOT){
         this->eat(pos, tok);
         return G * '.';
-    } else{
+    } else if (tok.tok == Token::LBRACKET) {
+        this->eat(pos,tok);
+        return G * this->F(pos, Graphe());
+    } else {
         this->eat(pos, {'n', Token::N});
         return G * tok.c;
     }
@@ -129,6 +138,41 @@ Graphe LParser::E(const shared_ptr<int>& pos, Graphe G) {
     }
     return G;
 }
+
+Graphe LParser::F(const shared_ptr<int>& pos, Graphe G){
+    Token tok = this->token(pos);
+    if (tok.tok == Token::RBRACKET)
+        return G;
+    uint8_t prev = tok.c;
+    uint8_t curr;
+    this->eat(pos, {'n', Token::N});
+    G = G * tok.c;
+    tok = this->token(pos);
+    while (tok.tok != Token::RBRACKET){
+        if (tok.tok == Token::DASH){
+            this->eat(pos, tok);
+            tok = this->token(pos);
+            this->eat(pos, {'n', Token::N});
+            curr = tok.c;
+            if (curr < prev){
+                cerr << "Synthax error: " << (char)prev << " has a higher value than " << tok.c << endl;
+                return G;
+            }
+            for (char c = prev + 1; c <= curr; c = c + 1) {
+                G = G + (Graphe() * c);
+            }
+            prev = curr;
+        } else{
+            prev = tok.c;
+            this->eat(pos, {'n', Token::N});
+            G = G + (Graphe() * prev);
+        }
+        tok = this->token(pos);
+    }
+    this->eat(pos, {']', Token::RBRACKET});
+    return G;
+}
+
 
 void LParser::printGraph() {this->graphe.print();}
 

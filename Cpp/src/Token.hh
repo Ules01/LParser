@@ -24,6 +24,9 @@ class Token {
             PLUS,
             END,
             N,
+            LBRACKET,
+            RBRACKET,
+            DASH,
         };
 
         char c;
