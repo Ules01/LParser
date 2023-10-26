@@ -55,6 +55,7 @@ void LParser::eat(const shared_ptr<int>& pos, Token search){
 
 void LParser::misMatch(char get, Token expect, int start, int end){
     cerr << "Syntax error: was expecting '" << expect.c << "' but get '" << get << "'" <<endl;
+    throw (SYNTAX_ERROR);
 }
 
 ostream& operator<<(ostream& os, const LParser &lparser) {
@@ -155,8 +156,8 @@ Graphe LParser::F(const shared_ptr<int>& pos, Graphe G){
             this->eat(pos, {'n', Token::N});
             curr = tok.c;
             if (curr < prev){
-                cerr << "Synthax error: " << (char)prev << " has a higher value than " << tok.c << endl;
-                return G;
+                cerr << "Value error: " << (char)prev << " has a higher value than " << tok.c << endl;
+                throw (VALUE_ERROR);
             }
             for (char c = prev + 1; c <= curr; c = c + 1) {
                 G = G + (Graphe() * c);

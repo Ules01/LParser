@@ -6,6 +6,9 @@
 
 using namespace std;
 
+#define VALUE_ERROR (1)
+#define SYNTAX_ERROR (2)
+
 class LParser {
     public:
         explicit LParser(const string& regexp);
