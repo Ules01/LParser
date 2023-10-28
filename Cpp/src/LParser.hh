@@ -34,7 +34,7 @@ class LParser {
         Graphe graphe;
         Token token(const shared_ptr<int>& pos);
         void eat(const shared_ptr<int>& pos, Token search);
-        static void misMatch(char get, Token expect, int start, int end);
+        static void misMatch(char get, Token expect);
         pair<int, char *> subfound(const char* str, int pos);
 
 

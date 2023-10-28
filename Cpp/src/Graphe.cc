@@ -50,8 +50,8 @@ void Graphe::mb() {
 }
 
 void Graphe::euclide() {
-    euclidePlus();
-    mb();
+    this->euclidePlus();
+    this->end.insert(0);
 }
 
 Graphe Graphe::operator*(Graphe graphe2) {
@@ -231,4 +231,44 @@ void Graphe::export_graphivz() {
     }
     exp = exp + "}";
     cout << exp << endl;
+}
+
+
+Graphe Graphe::reduce_or(){
+
+    set<int> to_del = set<int>();
+    set<int> new_end = set<int>();
+    for (int e: this->end){
+        if (this->G[e].empty()) {
+            to_del.insert(e);
+        }
+
+    }
+    if (to_del.empty())
+        return *this;
+    map<int, int> conv = map<int,int>();
+    int count = 0;
+    int super_end = this->G.size() - to_del.size();
+    for (int node = 0; node < this->G.size(); node++){
+        if (to_del.find(node) == to_del.end()){
+            conv[node] = count;
+            count += 1;
+        } else {
+            conv[node] = super_end;
+        }
+
+    }
+    Graphe res = Graphe();
+    for (int i = 0; i < super_end; i++)
+        res.newNode();
+    for (auto link_1: this->G){
+        for (auto link_2: link_1.second){
+            res.G[conv[link_1.first]][link_2.first] = conv[link_2.second];
+        }
+    }
+    for (int e: this->end)
+        new_end.insert(conv[e]);
+
+    res.end = new_end;
+    return res;
 }

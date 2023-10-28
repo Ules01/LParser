@@ -20,6 +20,8 @@ public:
     void euclidePlus();
     const map<int, map<char, int>>& get();
     Graphe reduce();
+    Graphe reduce_or();
+
 
     bool inEnd(int p);
 
@@ -31,6 +33,5 @@ private:
 
         int newNode();
         void subMerge(int n1, int n2);
-
 
 };

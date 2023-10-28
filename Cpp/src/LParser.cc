@@ -46,14 +46,13 @@ Token LParser::token(const shared_ptr<int>& pos) {
 }
 
 void LParser::eat(const shared_ptr<int>& pos, Token search){
-    int before = *pos;
     Token tok = this->token(pos);
     if (search != tok)
-        LParser::misMatch(tok.c, search, before, *pos);
+        LParser::misMatch(tok.c, search);
     *pos += 1;
 }
 
-void LParser::misMatch(char get, Token expect, int start, int end){
+void LParser::misMatch(char get, Token expect){
     cerr << "Syntax error: was expecting '" << expect.c << "' but get '" << get << "'" <<endl;
     throw (SYNTAX_ERROR);
 }
@@ -66,6 +65,7 @@ void LParser::Z(const shared_ptr<int>& pos) {
     Graphe graphe_tmp = this->S(pos, Graphe());
     this->eat(pos, {'$', Token::END});
     this->graphe = graphe_tmp.reduce();
+    this->graphe = graphe_tmp;
 }
 
 Graphe LParser::S(const shared_ptr<int>& pos, Graphe G) {
@@ -101,6 +101,8 @@ Graphe LParser::C(const shared_ptr<int>& pos, Graphe G) {
         this->eat(pos, tok);
         G = G + this->A(pos, Graphe());
         G = this->C(pos, G);
+        G = G.reduce();
+        G = G.reduce_or();
     }
     return G;
 }
@@ -171,6 +173,8 @@ Graphe LParser::F(const shared_ptr<int>& pos, Graphe G){
         tok = this->token(pos);
     }
     this->eat(pos, {']', Token::RBRACKET});
+    G = G.reduce();
+    G = G.reduce_or();
     return G;
 }
 
@@ -234,8 +238,9 @@ char *LParser::found(const char *str){
         if (res.first > 0)
             return res.second;
     }
-    if (this->graphe.inEnd(0))
-        return "";
+    if (this->graphe.inEnd(0)) {
+        return (char *)"\0";
+    }
     return NULL;
 }
 
