@@ -1,10 +1,12 @@
 #!/bin/bash
 
 if [ $# -ne 0 ]; then
+
+  argv=$*
   cd Cpp/src
   cmake CMakeLists.txt
   make
-  for var in $*; do
+  for var in $argv; do
     if [ $var = "-rebuild" ] || [ $var = "-rb" ]; then
       rm -rf CMakeFiles cmake_install.cmake Makefile draw CMakeCache.txt
       cmake CMakeLists.txt
