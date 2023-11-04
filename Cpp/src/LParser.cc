@@ -20,6 +20,8 @@ Token LParser::token(const shared_ptr<int>& pos) {
     switch (*(this->regexp + *pos)) {
         case '\0':
             return {'$', Token::END};
+        case '$':
+            return {'$', Token::END};
         case '|':
             return {'|', Token::OR};
         case '(':
@@ -292,4 +294,11 @@ vector<string> LParser::all(const char *str){
         }
     }
     return res;
+}
+
+void LParser::export_parserC(){
+    auto G = this->getGraph();
+    for (int rule = 0; rule < G.size(); rule++){
+
+    }
 }

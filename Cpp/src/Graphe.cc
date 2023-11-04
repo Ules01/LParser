@@ -69,10 +69,8 @@ Graphe Graphe::operator*(Graphe graphe2) {
                    if (this->G[e].find(c) != this->G[e].end()){
                         n = this->G[e][c];
                         this->G[e][c] = conv[graphe2.G[link_1.first][c]];
-                        if (n != e){
-                            subMerge(n, conv[graphe2.G[link_1.first][c]]);
-                        } else {
-                            this->G[conv[graphe2.G[link_1.first][c]]][c] = conv[graphe2.G[link_1.first][c]];
+                        for (auto n_link_2: G[n]){
+                            this->G[conv[graphe2.G[link_1.first][c]]][n_link_2.first] = n_link_2.second;
                         }
                    } else {
                        this->G[e][c] = conv[graphe2.G[link_1.first][c]];

@@ -13,18 +13,15 @@ class LParser {
     public:
         explicit LParser(const string& regexp);
         explicit LParser(char *regexp);
-
         friend ostream& operator<<(ostream&, const LParser& lparser);
-
         void printGraph();
         bool isaccept(const char *str);
         bool isaccept(const string& str);
-
         char * found(const char *str);
         char * found(const char *str, size_t pos);
-
         vector<string> all(const char *str);
         vector<string> all_at(const char *str, size_t pos);
+        void export_parserC();
 
 
     void export_graphivz();
@@ -37,7 +34,6 @@ class LParser {
         static void misMatch(char get, Token expect);
         pair<int, char *> subfound(const char* str, int pos);
 
-
         //Parser LL(1)
         void Z(const shared_ptr<int>& pos);
         Graphe S(const shared_ptr<int>& pos, Graphe G);
@@ -47,5 +43,4 @@ class LParser {
         Graphe D(const shared_ptr<int>& pos, Graphe G);
         Graphe E(const shared_ptr<int>& pos, Graphe G);
         Graphe F(const shared_ptr<int>& pos, Graphe G);
-
 };
